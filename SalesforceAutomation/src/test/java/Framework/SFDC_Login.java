@@ -24,6 +24,7 @@ import com.aventstack.extentreports.markuputils.ExtentColor;
 import com.aventstack.extentreports.markuputils.MarkupHelper;
 
  class SFDC_Login extends ReUsableMethods {
+
 	/*	public static void main(String[] args) throws IOException, InterruptedException {
 			
 		
@@ -44,124 +45,115 @@ import com.aventstack.extentreports.markuputils.MarkupHelper;
 
 @Test
 	
-		public static void Login_Error_Message_1() throws IOException  {
-		/*Properties pro=new Properties();
-		BufferedReader reader = new BufferedReader(new FileReader("C:/Users/sugam/git/repository/enexusSelenium/src/gitsample/.git/enexusSelenium/src/DataFiles/config.properties"));
-		pro.load(reader);
-		*/
-		logger = extent.createTest("Login_Error_Message_1");
-		System.out.println("Test Case for login error message");
-			    String expectedErrorText="Please check";	
-			    launchBrowser("firefox");
-			   // System.setProperty("webdriver.gecko.driver","./src/utility/geckodriver.exe"); 
-			   
-				//driver=new FirefoxDriver();
-				logger.log(Status.PASS, MarkupHelper.createLabel("Firefox driver is launched", ExtentColor.GREEN));
-
-				//System.out.println("Firefox Browser is launched");
-			    driver.manage().timeouts().implicitlyWait(20,TimeUnit.SECONDS);
-				driver.get("https://login.salesforce.com/");
-						
-				System.out.println("Salesforce Application is launched");
+		public static void Login_Error_Message_1() throws Exception  {
+	
+	 
+		String curDir=System.getProperty("user.dir");
+		Properties pro=loadProperty(curDir+"./src/test/resources/utility/config.properties");
+		Properties objpro=loadProperty(curDir+"./src/test/resources/utility/ObjectProperties.properties");
+	
+        CreateReport("Login_Error_Message_1");
+         
+		String expectedErrorText="Please check";	
+	    launchBrowser("firefox");			   
+			    
+		launchApplication(pro.getProperty("salesforceUrl"), "SalesForce");
 			
-			WebElement userName=driver.findElement(By.id("username"));
-			enterText(userName, "Pallavi@sugavanam.com", "UserName");
 			
-			WebElement password=driver.findElement(By.id("password"));
-			enterText(password, "Palsv", "Password");
+			WebElement userName=driver.findElement(getLocator("Salesforce.LoginPage.Username", objpro));
+			enterText(userName, objpro.getProperty("Salesforce.LoginPage.ValidUsername"), "UserName");
+			
+			WebElement password=driver.findElement(getLocator("Salesforce.LoginPage.Password",objpro));					
+			enterText(password, objpro.getProperty("Salesforce.LoginPage.inValidPassword"), "Password");
 
-			WebElement loginBtn=driver.findElement(By.id("Login"));
+			WebElement loginBtn=driver.findElement(getLocator("Salesforce.LoginPage.LoginBtn", objpro));
 			clickObj(loginBtn, "LoginBtn");
 
-			WebElement actualError=driver.findElement(By.xpath("//div[@id='error']"));
+			WebElement actualError=driver.findElement(getLocator("Salesforce.LoginPage.actError", objpro));
 		    String message=getText(actualError,"Error");
 		    
-		   //0 Assert.assertTrue(message.contains(expectedErrorText));	
 		    verifyText(actualError, "Error msg", expectedErrorText);
 		    
-			driver.close();
-			System.out.println("Test is completed");
+			closeDriver();
 						}
 				
 		@Test
 
-				public static void Check_RememberMe_3() throws InterruptedException, IOException {
-					logger = extent.createTest("Check_RememberMe_3");
+				public static void Check_RememberMe_3() throws Exception {
 
-	System.out.println("Test case Check Remember Me");
-
-//System.setProperty("webdriver.gecko.driver","./src/utility/geckodriver.exe"); 
-
-//driver=new FirefoxDriver();
+			String curDir=System.getProperty("user.dir");
+			Properties pro=loadProperty(curDir+"./src/test/resources/utility/config.properties");
+			Properties objpro=loadProperty(curDir+"./src/test/resources/utility/ObjectProperties.properties");
+		
+	        CreateReport("Check_RememberMe_3");
+	
 	launchBrowser("firefox");
-System.out.println("Firefox Browser is launched");
-driver.manage().timeouts().implicitlyWait(20,TimeUnit.SECONDS);
-driver.get("https://login.salesforce.com/");
-System.out.println("Salesforce Application is launched");
-					String expectedErrorText="Pallavi@sugavanam.com";	
+	launchApplication(pro.getProperty("salesforceUrl"), "SalesForce");
+
+
+					String expectedErrorText="Pallavi@sugavanam.com";
+					WebElement userName=driver.findElement(getLocator("Salesforce.LoginPage.Username", objpro));
+					enterText(userName, objpro.getProperty("Salesforce.LoginPage.ValidUsername"), "UserName");
 				
+					WebElement password=driver.findElement(getLocator("Salesforce.LoginPage.Password",objpro));					
+					enterText(password, objpro.getProperty("Salesforce.LoginPage.ValidPassword"), "Password");	
+		
 
-			WebElement userName=driver.findElement(By.id("username"));
-			enterText(userName, "Pallavi@sugavanam.com", "UserName");
-
-			WebElement password=driver.findElement(By.id("password"));
-			enterText(password, "Palsvenu80", "Password");
-
-
-			WebElement rememberCheckBox=driver.findElement(By.xpath("//input[@id='rememberUn']"));
+		
+			WebElement rememberCheckBox=driver.findElement(getLocator("Salesforce.LoginPage.checkRememberMe", objpro));
             checkBoxObj(rememberCheckBox, "Remember Password Button");
 
-
-            WebElement loginBtn=driver.findElement(By.id("Login"));
-            clickObj(loginBtn, "Login Button");
+            WebElement loginBtn=driver.findElement(getLocator("Salesforce.LoginPage.LoginBtn", objpro));
+			clickObj(loginBtn, "LoginBtn");
+           
 					Thread.sleep(2000);
-			WebElement userDropdown=driver.findElement(By.xpath("//span[@id='userNavLabel']"));
-			List<WebElement> listOfUserMenu=driver.findElements(By.xpath("//div[@id='userNav-menuItems']//a"));
+			WebElement userDropdown=driver.findElement(getLocator("Salesforce.HomePage.UserDropdown", objpro));
+			List<WebElement> listOfUserMenu=driver.findElements(getLocator("Salesforce.HomePage.UserDropdownList", objpro));
             dropdown(userDropdown, listOfUserMenu,"Logout");
 
 
 			
-			WebElement afterLogoutUsermail=driver.findElement(By.xpath("//span[@id='idcard-identity']"));
+			WebElement afterLogoutUsermail=driver.findElement(getLocator("Salesforce.HomePage.AfterLogoutUsermail", objpro));
 			 String message=getAttribute(afterLogoutUsermail, "value","username");
 			 System.out.println(message);
 			 verifyAttribute(afterLogoutUsermail, "value","Username", expectedErrorText);
-			// verifyText(element, elementName, expectedText);
-			   // Assert.assertEquals(message, expectedErrorText);	
-			    driver.close();
-		//Assert.assertTrue(message.contains(expectedErrorText));		
-				System.out.println("Test is completed");
+		closeDriver();
+				//System.out.println("Test is completed");
 
 			    
 			}
 
 //@Test
-public static void forgot_Password_4A() throws InterruptedException, IOException {
-	logger = extent.createTest("forgot_Password_4A");
+public static void forgot_Password_4A() throws Exception {
+	String curDir=System.getProperty("user.dir");
+	Properties pro=loadProperty(curDir+"./src/test/resources/utility/config.properties");
+	Properties objpro=loadProperty(curDir+"./src/test/resources/utility/ObjectProperties.properties");
 
-	System.out.println("Test case for forgotPassword");
-	    //System.setProperty("webdriver.gecko.driver","./src/utility/geckodriver.exe"); 
-	   
-		//driver=new FirefoxDriver();
-	launchBrowser("firefox");
-		System.out.println("Firefox Browser is launched");
-	    driver.manage().timeouts().implicitlyWait(20,TimeUnit.SECONDS);
-		driver.get("https://login.salesforce.com/");
-		System.out.println("Salesforce Application is launched");
-	Thread.sleep(2000);
+    CreateReport("forgot_Password_4A");
+
+launchBrowser("firefox");
+launchApplication(pro.getProperty("salesforceUrl"), "SalesForce");
+
+
+			
+   
+	
+	
+	
 		
-		WebElement forgotPassword=driver.findElement(By.id("forgot_password_link"));
+		WebElement forgotPassword=driver.findElement(getLocator("Salesforce.LoginPage.ForgetPassword", objpro));
         clickObj(forgotPassword, "forgot Password");	
 
-		WebElement enterUsernameInForgot=driver.findElement(By.id("un"));
-		enterText(enterUsernameInForgot, "pallavi@sugavanam.com","UserName");
+		WebElement enterUsernameInForgot=driver.findElement(getLocator("Salesforce.ForgetPage.UsernameInForget", objpro));
+		enterText(enterUsernameInForgot, objpro.getProperty("Salesforce.LoginPage.ValidUsername"),"UserName");
 		
-		WebElement continueInForgot=driver.findElement(By.id("continue"));
+		WebElement continueInForgot=driver.findElement(getLocator("Salesforce.ForgetPage.ContinueBtn", objpro));
 		clickObj(continueInForgot, "Continue");
 		Thread.sleep(2000);
 		//checkGetTitle("Check Your Email", "Check Your Email");
 	
 		
-		WebElement textMsgInCheckEmail=driver.findElement(By.xpath("//div[@class='message']//p"));
+		WebElement textMsgInCheckEmail=driver.findElement(getLocator("Salesforce.ForgetPage.ActualMessage", objpro));
 		checkGetText(textMsgInCheckEmail, "Check Your");
 		System.out.println(textMsgInCheckEmail);
 		System.out.println("Test is completed");
@@ -172,156 +164,149 @@ closeDriver();	}
 
 
 //@Test
-public static void ValidateLoginErrorMessage_5 () {
-	logger = extent.createTest("ValidateLoginErrorMessage_5");
+public static void ValidateLoginErrorMessage_5 () throws Exception {
+	
+	String curDir=System.getProperty("user.dir");
+	Properties pro=loadProperty(curDir+"./src/test/resources/utility/config.properties");
+	Properties objpro=loadProperty(curDir+"./src/test/resources/utility/ObjectProperties.properties");
+
+    CreateReport("forgot_Password_4A");
+
+launchBrowser("firefox");
+launchApplication(pro.getProperty("salesforceUrl"), "SalesForce");
+
+
+			
 		String actualMsg=
 				"Your login attempt has failed. The username or password may be incorrect, or your location or login time may be restricted. Please contact the administrator at your company for help";
-		System.out.println("Validate Login Message");
-		   // System.setProperty("webdriver.gecko.driver","./src/utility/geckodriver.exe"); 		   
-			//driver=new FirefoxDriver();
-		launchBrowser("firefox");
-			System.out.println("Firefox Browser is launched");
-		    driver.manage().timeouts().implicitlyWait(20,TimeUnit.SECONDS);
-			driver.get("https://login.salesforce.com/");
-			System.out.println("Salesforce Application is launched");
-		try {
-			Thread.sleep(2000);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-			
-		WebElement userName=driver.findElement(By.id("username"));
-		enterText(userName, "123","UserName");
-
-		WebElement password=driver.findElement(By.id("password"));
-		enterText(password, "22131","UserName");
-
-
-
-        WebElement loginBtn=driver.findElement(By.id("Login"));
-        clickObj(loginBtn, "Login Button");
-				try {
-					Thread.sleep(2000);
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}	
 		
-		WebElement errorMsg=driver.findElement(By.xpath("//div[@id='error']"));
+		
+		WebElement userName=driver.findElement(getLocator("Salesforce.LoginPage.Username", objpro));
+		enterText(userName, "123", "UserName");
+	
+		WebElement password=driver.findElement(getLocator("Salesforce.LoginPage.Password",objpro));					
+		enterText(password,"223132", "Password");	
+
+		  WebElement loginBtn=driver.findElement(getLocator("Salesforce.LoginPage.LoginBtn", objpro));
+	    clickObj(loginBtn, "LoginBtn");
+         
+	
+
+	     Thread.sleep(2000);
+		
+		WebElement errorMsg=driver.findElement(getLocator("Salesforce.LoginPage.ErrorMsg", objpro));
 		
 		System.out.println(errorMsg);
-checkGetText(errorMsg, actualMsg);
- closeDriver();
+         checkGetText(errorMsg, actualMsg);
+         closeDriver();
 }	
 
 //@Test
-public static void UserDropDownMenu() throws InterruptedException {
+public static void UserDropDownMenu() throws Exception {
+	
+	String curDir=System.getProperty("user.dir");
+	Properties pro=loadProperty(curDir+"./src/test/resources/utility/config.properties");
+	Properties objpro=loadProperty(curDir+"./src/test/resources/utility/ObjectProperties.properties");
 
-	logger = extent.createTest("UserDropDownMenu");
+    CreateReport("Check_RememberMe_3");
 
-
-//System.setProperty("webdriver.chrome.driver","./src/utility/chromedriver.exe");		   
-//driver=new ChromeDriver();
-	launchBrowser("chrome");
-driver.manage().timeouts().implicitlyWait(40,TimeUnit.SECONDS);
+launchBrowser("firefox");
 driver.manage().window().maximize();
-driver.get("https://login.salesforce.com/");
 
-WebElement userName=driver.findElement(By.id("username"));
-enterText(userName, "Pallavi@sugavanam.com"," UserName");
-
-WebElement password=driver.findElement(By.id("password"));
-enterText(password, "Palsvenu80", "Password");
+launchApplication(pro.getProperty("salesforceUrl"), "SalesForce");
 
 
+			WebElement userName=driver.findElement(getLocator("Salesforce.LoginPage.Username", objpro));
+			enterText(userName, objpro.getProperty("Salesforce.LoginPage.ValidUsername"), "UserName");
+		
+			WebElement password=driver.findElement(getLocator("Salesforce.LoginPage.Password",objpro));					
+			enterText(password, objpro.getProperty("Salesforce.LoginPage.ValidPassword"), "Password");	
 
 
-WebElement loginBtn=driver.findElement(By.id("Login"));
-clickObj(loginBtn, "Login Button");
-
-		Thread.sleep(2000);
-WebElement userDropdown=driver.findElement(By.xpath("//span[@id='userNavLabel']"));
-List<WebElement> listOfUserMenu=driver.findElements(By.xpath("//div[@id='userNav-menuItems']//a"));
-dropdown(userDropdown, listOfUserMenu,"My Profile");
-
-
+    WebElement loginBtn=driver.findElement(getLocator("Salesforce.LoginPage.LoginBtn", objpro));
+	clickObj(loginBtn, "LoginBtn");
+   
+			Thread.sleep(2000);
+	WebElement userDropdown=driver.findElement(getLocator("Salesforce.HomePage.UserDropdown", objpro));
+	List<WebElement> listOfUserMenu=driver.findElements(getLocator("Salesforce.HomePage.UserDropdownList", objpro));
+    dropdown(userDropdown, listOfUserMenu,"My Profile");
 
 
 
-WebElement editContact=driver.findElement(By.xpath(" //a[@class='contactInfoLaunch editLink']//img[@title='Edit Profile']"));
+
+
+
+
+
+
+
+WebElement editContact=driver.findElement(getLocator("Salesforce.MyProfile.EditContact", objpro));
 clickObj(editContact, "The Edit Contact");
-//editContact.click();
 
 driver.switchTo().frame(1);
 
-WebElement about=driver.findElement(By.xpath("//li[@id='aboutTab']//a[@aria-controls='TabPanel:0:Body:1']"));
+WebElement about=driver.findElement(getLocator("Salesforce.MyProfile.EditProfile.Contact",objpro));
 clickObj(about,"The About Tab");
-//about.click();
 
-WebElement changeLastName=driver.findElement(By.id("lastName"));
+WebElement changeLastName=driver.findElement(getLocator("Salesforce.MyProfile.EditProfile.Contact.LastName",objpro));
 enterText(changeLastName, "Sugavanam", "LastName");
-//changeLastName.clear();
-//changeLastName.sendKeys("Sugavanam");
 
-WebElement saveChanged=driver.findElement(By.xpath("//div[@class='net-buttons zen-mtl']//input[@value='Save All']"));
+
+WebElement saveChanged=driver.findElement(getLocator("Salesforce.MyProfile.EditProfile.Contact.Save",objpro));
 clickObj(saveChanged, "Save Tab");
-//saveChanged.click();
 driver.switchTo().defaultContent();
 
-WebElement changedUserName=driver.findElement(By.id("tailBreadcrumbNode"));
+WebElement changedUserName=driver.findElement(getLocator("Salesforce.MyProfile.NameTitle",objpro));
 checkGetText(changedUserName, "Sugavanam");
 
 
 
 //post
 
-WebElement postInProfile=driver.findElement(By.xpath("//span[contains(@class,'publisherattachtext')][contains(text(),'Post')]"));
+WebElement postInProfile=driver.findElement(getLocator("SalesForce.MyProfile.Post",objpro));
 clickObj(postInProfile, "Post Button");
 //postInProfile.click();
 
-WebElement myFrame1=driver.findElement(By.xpath("//iframe[@class='cke_wysiwyg_frame cke_reset']"));
+WebElement myFrame1=driver.findElement(getLocator("SalesForce.MyProfile.Post.myFrame",objpro));
 
 
 driver.switchTo().frame(myFrame1);
 
-WebElement writeInPost=driver.findElement(By.xpath("//body[contains(@class,'chatterPublisherRTE ')]"));
+WebElement writeInPost=driver.findElement(getLocator("SalesForce.MyProfile.Post.write",objpro));
 enterText(writeInPost, "This is Learning Selenium", "post");
-/*
-writeInPost.click();
-writeInPost.sendKeys("This is Learning Selenium");
-*/
+
 
 driver.switchTo().defaultContent();
 
 
-WebElement ShareBtn=driver.findElement(By.xpath("//input[@id='publishersharebutton']"));
+WebElement ShareBtn=driver.findElement(getLocator("Salesforce.MyProfile.Post.Share", objpro));
 clickObj(ShareBtn, "Share button");
 //ShareBtn.click();
 
-WebElement displayText1=driver.findElement(By.xpath("//div[@class='cxfeeditemtextadditional']//span[@class='feeditemtext cxfeeditemtext']//p"));
-
-checkGetText(displayText1, "This is Learning");
+WebElement displayText1=driver.findElement(getLocator("Salesforce.MyProfile.Post.DisplatText", objpro));
+		
+verifyText(displayText1, "The Written Characters", "This is Learning");
+//checkGetText(displayText1, "This is Learning");
 
 
 //file
 
 
 Thread.sleep(2000);
-WebElement fileInProfile=driver.findElement(By.xpath(" //a[@id='publisherAttachContentPost']"));
+WebElement fileInProfile=driver.findElement(getLocator("Salesforce.MyProfile.File", objpro));
 clickObj(fileInProfile, "The File Tab");
 
-WebElement uploadBtn=driver.findElement(By.xpath(" //a[@id='chatterUploadFileAction']"));
+WebElement uploadBtn=driver.findElement(getLocator("Salesforce.MyProfile.File.Upload", objpro));
 clickObj(uploadBtn, "The upload button");
-WebElement browseInfile=driver.findElement(By.xpath("//input[@id='chatterFile']"));
-//browseInfile.click();
-//browseInfile.sendKeys("F:\\Pallavi\\unixworking");
 
-enterText(browseInfile, "F:\\Pallavi\\unixworking", "The path");
+WebElement browseInfile=driver.findElement(getLocator("Salesforce.MyProfile.File.browse", objpro));
+
+
+enterText(browseInfile, objpro.getProperty( "Salesforce.MyProfile.File.PathToBrowseFile"), "The path");
 System.out.println("The file is Successfully downlaoded");
 //upload photo
 
-WebElement browseInPhoto=driver.findElement(By.xpath("//div[@id='photoSection']//img[@title='Pallavi Sugavanam']"));
+WebElement browseInPhoto=driver.findElement(getLocator(" Salesforce.MyProfile.Photo", objpro));
 Actions action=new Actions(driver);
 action.moveToElement(browseInPhoto).build().perform();
 

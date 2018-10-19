@@ -1,14 +1,18 @@
 package Framework;
 
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.List;
+import java.util.Properties;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.poi.hssf.usermodel.HSSFCell;
@@ -41,7 +45,7 @@ import org.apache.commons.io.FileUtils;
 
 	static ExtentHtmlReporter htmlReporter;
 	static ExtentReports extent=null;
-	static ExtentTest logger=null;
+	//static ExtentTest logger=null;
 	
 	public static String[][] readxlData(String path,String sheetName) throws IOException{
 		
@@ -64,7 +68,60 @@ import org.apache.commons.io.FileUtils;
 		}
 		return data;
 	}
+	public static void launchApplication(String url,String urlName) {
+		driver.manage().timeouts().implicitlyWait(20,TimeUnit.SECONDS);
+		driver.get(url);				
+		System.out.println(urlName+" is launched");
 	
+	}
+	
+	public static void CreateReport(String testCaseName) {
+		logger = extent.createTest(testCaseName);
+		System.out.println("Test Case for "+testCaseName);
+	}
+	public static By getLocator(String strElement,Properties propertyFile) throws Exception {
+        
+        // retrieve the specified object from the object list
+        String locator = propertyFile.getProperty(strElement);
+
+
+         
+        // extract the locator type and value from the object
+        String locatorType = locator.split(":")[0];
+        String locatorValue = locator.split(":")[1];
+         
+        // for testing and debugging purposes
+        System.out.println("Retrieving object of type '" + locatorType + "' and value '" + locatorValue + "' from the object map");
+         
+        // return a instance of the By class based on the type of the locator
+        // this By can be used by the browser object in the actual test
+        if(locatorType.toLowerCase().equals("id"))
+            return By.id(locatorValue);
+        else if(locatorType.toLowerCase().equals("name"))
+            return By.name(locatorValue);
+        else if((locatorType.toLowerCase().equals("classname")) || (locatorType.toLowerCase().equals("class")))
+            return By.className(locatorValue);
+        else if((locatorType.toLowerCase().equals("tagname")) || (locatorType.toLowerCase().equals("tag")))
+            return By.className(locatorValue);
+        else if((locatorType.toLowerCase().equals("linktext")) || (locatorType.toLowerCase().equals("link")))
+            return By.linkText(locatorValue);
+        else if(locatorType.toLowerCase().equals("partiallinktext"))
+            return By.partialLinkText(locatorValue);
+        else if((locatorType.toLowerCase().equals("cssselector")) || (locatorType.toLowerCase().equals("css")))
+            return By.cssSelector(locatorValue);
+        else if(locatorType.toLowerCase().equals("xpath"))
+            return By.xpath(locatorValue);
+        else
+            throw new Exception("Unknown locator type '" + locatorType + "'");
+    }
+
+public static Properties loadProperty(String Path) throws IOException {
+Properties pro=new Properties();
+
+BufferedReader reader = new BufferedReader(new FileReader(Path));
+pro.load(reader);
+return pro;
+}
 	/*
 	 * Name of th Method:Execution Of Extent Report
 	 * Brief Description:Click on Object
@@ -96,7 +153,7 @@ import org.apache.commons.io.FileUtils;
 		{
 			if (element.isDisplayed())
 			{	
-				if (element.getAttribute(value).equals(expectedText))
+				if (element.getAttribute(value).contains(expectedText))
 					logger.log(Status.PASS, MarkupHelper.createLabel( elementName+" is displayed as expected", ExtentColor.GREEN));
 				else{
 					logger.log(Status.FAIL, MarkupHelper.createLabel( elementName+"is NOT as expected", ExtentColor.RED));
